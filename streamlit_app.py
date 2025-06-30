@@ -91,6 +91,55 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# 组织类型映射：用户友好名称 -> UBERON ID
+ONTOLOGY_TERM_MAP: Dict[str, str] = {
+    "肺 (Lung)": "UBERON:0002048",          # Lung
+    "大脑 (Brain)": "UBERON:0000955",        # Brain
+    "右肝叶 (Right liver lobe)": "UBERON:0001114",  # Right liver lobe
+    "结肠 - 横结肠 (Colon - Transverse)": "UBERON:0001157",  # Colon - Transverse
+    "小脑 (Cerebellum)": "UBERON:0002037",  # Cerebellum
+    "脑干 (Brainstem)": "UBERON:0002298",  # Brainstem
+    "脊髓 (Spinal cord)": "UBERON:0002240",  # Spinal cord
+    "眼 (Eye)": "UBERON:0000970",  # Eye
+    "内耳 (Inner ear)": "UBERON:0006860",  # Inner ear
+    "心脏 (Heart)": "UBERON:0000948",  # Heart
+    "气管 (Trachea)": "UBERON:0003126",  # Trachea
+    "喉 (Larynx)": "UBERON:0001737",  # Larynx
+    "咽 (Pharynx)": "UBERON:0000340",  # Pharynx
+    "胃 (Stomach)": "UBERON:0000945",  # Stomach
+    "小肠 (Small intestine)": "UBERON:0002108",  # Small intestine
+    "十二指肠 (Duodenum)": "UBERON:0002114",  # Duodenum
+    "空肠 (Jejunum)": "UBERON:0002115",  # Jejunum
+    "回肠 (Ileum)": "UBERON:0002116",  # Ileum
+    "大肠 (Large intestine)": "UBERON:0000160",  # Large intestine
+    "结肠 (Colon)": "UBERON:0001155",  # Colon
+    "直肠 (Rectum)": "UBERON:0001052",  # Rectum
+    "肝 (Liver)": "UBERON:0002107",  # Liver
+    "胆囊 (Gallbladder)": "UBERON:0002110",  # Gallbladder
+    "胰腺 (Pancreas)": "UBERON:0001264",  # Pancreas
+    "脾 (Spleen)": "UBERON:0002106",  # Spleen
+    "肾 (Kidney)": "UBERON:0002113",  # Kidney
+    "输尿管 (Ureter)": "UBERON:0000056",  # Ureter
+    "膀胱 (Urinary bladder)": "UBERON:0001255",  # Urinary bladder
+    "尿道 (Urethra)": "UBERON:0000057",  # Urethra
+    "甲状腺 (Thyroid gland)": "UBERON:0001132",  # Thyroid gland
+    "副甲状腺 (Parathyroid gland)": "UBERON:0002260",  # Parathyroid gland
+    "肾上腺 (Adrenal gland)": "UBERON:0002369",  # Adrenal gland
+    "垂体 (Pituitary gland)": "UBERON:0000007",  # Pituitary gland
+    "胸腺 (Thymus)": "UBERON:0001178",  # Thymus
+    "松果体 (Pineal gland)": "UBERON:0000986",  # Pineal gland
+    "卵巢 (Ovary)": "UBERON:0000992",  # Ovary
+    "子宫 (Uterus)": "UBERON:0000995",  # Uterus
+    "阴道 (Vagina)": "UBERON:0000996",  # Vagina
+    "睾丸 (Testis)": "UBERON:0000473",  # Testis
+    "前列腺 (Prostate gland)": "UBERON:0002367",  # Prostate gland
+    "精囊 (Seminal vesicle)": "UBERON:0001049",  # Seminal vesicle
+    "阴茎 (Penis)": "UBERON:0000464",  # Penis
+    "皮肤 (Skin)": "UBERON:0002097",  # Skin
+    "骨（器官级） (Bone organ)": "UBERON:0001474",  # Bone organ
+    "骨骼肌器官 (Skeletal muscle organ)": "UBERON:0001134",  # Skeletal muscle organ
+}
+
 def main():
     """主应用程序函数"""
     
@@ -192,22 +241,17 @@ def dna_sequence_prediction():
         # 输出类型选择
         output_types = st.multiselect(
             "输出类型",
-            options=['DNASE', 'CAGE', 'RNA_SEQ', 'HISTONE_H3K4ME3', 'HISTONE_H3K27AC'],
+            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
             default=['DNASE'],
             help="选择要预测的输出类型",
             key="dna_seq_output_types"
         )
         
         # 组织类型选择
-        ontology_terms = st.multiselect(
-            "组织类型 (Ontology Terms)",
-            options=[
-                'UBERON:0002048',  # Lung
-                'UBERON:0000955',  # Brain
-                'UBERON:0001114',  # Right liver lobe
-                'UBERON:0001157',  # Colon - Transverse
-            ],
-            default=['UBERON:0002048'],
+        ontology_term_labels = st.multiselect(
+            "组织类型",
+            options=list(ONTOLOGY_TERM_MAP.keys()),
+            default=["肺 (Lung)"],
             help="选择要分析的组织类型",
             key="dna_seq_ontology_terms"
         )
@@ -232,9 +276,12 @@ def dna_sequence_prediction():
             st.error("请选择至少一个输出类型")
             return
         
-        if not ontology_terms:
+        if not ontology_term_labels:
             st.error("请选择至少一个组织类型")
             return
+        
+        # 将可读名称转换为 UBERON ID
+        ontology_terms = [ONTOLOGY_TERM_MAP[label] for label in ontology_term_labels]
         
         try:
             with st.spinner("正在进行预测..."):
@@ -307,20 +354,16 @@ def genomic_interval_prediction():
         # 输出类型
         output_types = st.multiselect(
             "输出类型",
-            options=['RNA_SEQ', 'DNASE', 'CAGE'],
-            default=['RNA_SEQ'],
+            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
+            default=['DNASE'],
             key="interval_output_types"
         )
         
         # 组织类型
-        ontology_terms = st.multiselect(
+        ontology_term_labels = st.multiselect(
             "组织类型",
-            options=[
-                'UBERON:0001114',  # Right liver lobe
-                'UBERON:0002048',  # Lung
-                'UBERON:0000955',  # Brain
-            ],
-            default=['UBERON:0001114'],
+            options=list(ONTOLOGY_TERM_MAP.keys()),
+            default=["肺 (Lung)"],
             key="interval_ontology_terms"
         )
         
@@ -366,6 +409,7 @@ def genomic_interval_prediction():
                 # 转换参数
                 requested_outputs = [getattr(dna_client.OutputType, ot) for ot in output_types]
                 organism_obj = getattr(dna_client.Organism, organism)
+                ontology_terms = [ONTOLOGY_TERM_MAP[label] for label in ontology_term_labels]
                 
                 # 进行预测
                 output = st.session_state.dna_model.predict_interval(
@@ -426,20 +470,16 @@ def variant_effect_analysis():
         # 输出类型
         output_types = st.multiselect(
             "输出类型",
-            options=['RNA_SEQ', 'DNASE', 'CAGE'],
-            default=['RNA_SEQ'],
+            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
+            default=['DNASE'],
             key="variant_output_types"
         )
         
         # 组织类型
-        ontology_terms = st.multiselect(
+        ontology_term_labels = st.multiselect(
             "组织类型",
-            options=[
-                'UBERON:0001157',  # Colon - Transverse
-                'UBERON:0001114',  # Right liver lobe
-                'UBERON:0002048',  # Lung
-            ],
-            default=['UBERON:0001157'],
+            options=list(ONTOLOGY_TERM_MAP.keys()),
+            default=["肺 (Lung)"],
             key="variant_ontology_terms"
         )
     
@@ -473,6 +513,7 @@ def variant_effect_analysis():
                 
                 # 转换参数
                 requested_outputs = [getattr(dna_client.OutputType, ot) for ot in output_types]
+                ontology_terms = [ONTOLOGY_TERM_MAP[label] for label in ontology_term_labels]
                 
                 # 进行变异预测
                 variant_output = st.session_state.dna_model.predict_variant(
@@ -531,7 +572,7 @@ def variant_scoring():
         # 评分器选择
         scorer_type = st.selectbox(
             "评分器类型",
-            options=['RNA_SEQ', 'DNASE', 'CAGE'],
+            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
             index=0,
             key="score_type"
         )
@@ -622,7 +663,7 @@ def ism_analysis():
         # 输出类型
         output_type = st.selectbox(
             "输出类型",
-            options=['DNASE', 'RNA_SEQ', 'CAGE'],
+            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
             index=0,
             key="ism_output_type"
         )
@@ -760,19 +801,6 @@ def display_scoring_results(variant_scores, variant):
         st.metric("轨道数量", variant_scores.X.shape[1])
     with col3:
         st.metric("总评分数", variant_scores.X.size)
-    
-    # 显示评分统计
-    # scores_flat = variant_scores.X.flatten()
-    
-    # col1, col2, col3, col4 = st.columns(4)
-    # with col1:
-    #     st.metric("平均评分", f"{scores_flat.mean():.6f}")
-    # with col2:
-    #     st.metric("标准差", f"{scores_flat.std():.6f}")
-    # with col3:
-    #     st.metric("最大评分", f"{scores_flat.max():.6f}")
-    # with col4:
-    #     st.metric("最小评分", f"{scores_flat.min():.6f}")
     
     # 显示基因信息
     st.markdown("#### 基因评分信息")
