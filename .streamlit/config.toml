@@ -1,0 +1,40 @@
+[global]
+# 开发模式设置
+developmentMode = false
+
+# 数据框显示格式
+dataFrameSerialization = "legacy"
+
+[server]
+# 服务器配置
+port = 8501
+enableCORS = false
+enableXsrfProtection = false
+
+# 文件上传限制 (200MB)
+maxUploadSize = 200
+
+# 消息大小限制
+maxMessageSize = 200
+
+# 启用WebSocket压缩
+enableWebsocketCompression = true
+
+[browser]
+# 浏览器配置
+gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
+
+[theme]
+# 主题配置
+primaryColor = "#1f4e79"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#262730"
+font = "sans serif"
+
+[client]
+# 客户端配置
+toolbarMode = "viewer"
+showErrorDetails = true 

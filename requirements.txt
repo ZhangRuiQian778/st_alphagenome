@@ -1,0 +1,30 @@
+# Streamlit应用程序依赖
+streamlit>=1.28.0
+pandas>=1.5.0
+matplotlib>=3.6.0
+numpy>=1.21.0
+scipy>=1.9.0
+
+# AlphaGenome核心依赖
+alphagenome
+absl-py
+anndata
+grpcio>=1.67.1
+immutabledict
+intervaltree
+jaxtyping
+ml_dtypes
+protobuf>=5.28.3
+pyarrow
+seaborn
+tqdm
+typeguard
+typing_extensions
+zstandard
+
+# 可选的可视化增强包
+plotly>=5.0.0
+bokeh>=2.4.0
+
+# 数据处理增强包
+openpyxl>=3.0.0  # 用于Excel文件支持 
