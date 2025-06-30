@@ -241,7 +241,7 @@ def dna_sequence_prediction():
         # 输出类型选择
         output_types = st.multiselect(
             "输出类型",
-            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
+            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'PROCAP'],
             default=['DNASE'],
             help="选择要预测的输出类型",
             key="dna_seq_output_types"
@@ -354,8 +354,8 @@ def genomic_interval_prediction():
         # 输出类型
         output_types = st.multiselect(
             "输出类型",
-            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
-            default=['DNASE'],
+            options=['RNA_SEQ'],
+            default=['RNA_SEQ'],
             key="interval_output_types"
         )
         
@@ -470,8 +470,8 @@ def variant_effect_analysis():
         # 输出类型
         output_types = st.multiselect(
             "输出类型",
-            options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
-            default=['DNASE'],
+            options=['RNA_SEQ'],
+            default=['RNA_SEQ'],
             key="variant_output_types"
         )
         
@@ -573,7 +573,7 @@ def variant_scoring():
         scorer_type = st.selectbox(
             "评分器类型",
             options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
-            index=0,
+            index=3,
             key="score_type"
         )
         
@@ -610,7 +610,7 @@ def variant_scoring():
                 )
                 
                 # 显示评分结果
-                display_scoring_results(variant_scores, variant)
+                display_scoring_results(variant_scores, variant, scorer_type)
                 
         except Exception as e:
             st.error(f"变异评分过程中出现错误: {str(e)}")
@@ -664,7 +664,7 @@ def ism_analysis():
         output_type = st.selectbox(
             "输出类型",
             options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
-            index=0,
+            index=3,  # RNA_SEQ的索引是3
             key="ism_output_type"
         )
         
@@ -784,7 +784,7 @@ def display_variant_results(variant_output, variant, output_types):
             st.metric("最小差异", f"{diff_values.min():.6f}")
         
 
-def display_scoring_results(variant_scores, variant):
+def display_scoring_results(variant_scores, variant, scorer_type):
     """显示变异评分结果"""
     st.markdown('<h3 class="sub-header">📊 变异评分结果</h3>', unsafe_allow_html=True)
     
@@ -803,13 +803,10 @@ def display_scoring_results(variant_scores, variant):
         st.metric("总评分数", variant_scores.X.size)
     
     # 显示基因信息
-    st.markdown("#### 基因评分信息")
-    gene_info = variant_scores.obs.copy()
-    # gene_info['平均评分'] = variant_scores.X.mean(axis=1)
-    # gene_info['最大评分'] = variant_scores.X.max(axis=1)
-    # gene_info['最小评分'] = variant_scores.X.min(axis=1)
-    
-    st.dataframe(gene_info, use_container_width=True)
+    if scorer_type == 'RNA_SEQ':
+        st.markdown("#### 基因评分信息")
+        gene_info = variant_scores.obs.copy()
+        st.dataframe(gene_info, use_container_width=True)
 
     # 显示变异评分数据
     st.markdown("#### 变异评分数据的可视化")
