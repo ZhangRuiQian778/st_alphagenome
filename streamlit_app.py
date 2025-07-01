@@ -351,10 +351,10 @@ def genomic_interval_prediction():
     
     with col2:
         # 输出类型
-        output_types = st.multiselect(
+        output_types = st.selectbox(
             "输出类型",
             options=['RNA_SEQ'],
-            default=['RNA_SEQ'],
+            index=0,
             key="interval_output_types"
         )
         
@@ -480,10 +480,10 @@ def variant_effect_analysis():
     
     with col2:
         # 输出类型
-        output_types = st.multiselect(
+        output_types = st.selectbox(
             "输出类型",
             options=['RNA_SEQ'],
-            default=['RNA_SEQ'],
+            index=0,
             key="variant_output_types"
         )
         
