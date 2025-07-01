@@ -972,26 +972,6 @@ def display_gene_annotation(interval, gtf):
         
         longest_transcripts = transcript_extractor.extract(interval)
         
-        # if longest_transcripts:
-        #     st.markdown("#### 基因注释信息")
-        #     st.markdown(f"在区间 {interval} 中发现 {len(longest_transcripts)} 个转录本")
-            
-        #     # 创建基因信息表
-        #     gene_info = []
-        #     for transcript in longest_transcripts:
-        #         gene_info.append({
-        #             '基因符号': getattr(transcript, 'gene_name', 'N/A'),
-        #             '转录本ID': getattr(transcript, 'transcript_id', 'N/A'),
-        #             '染色体': getattr(transcript, 'chromosome', 'N/A'),
-        #             '起始位置': getattr(transcript, 'start', 'N/A'),
-        #             '结束位置': getattr(transcript, 'end', 'N/A'),
-        #             '链向': getattr(transcript, 'strand', 'N/A'),
-        #         })
-            
-        #     gene_df = pd.DataFrame(gene_info)
-        #     st.dataframe(gene_df, use_container_width=True)
-        # else:
-        #     st.info("在指定区间内未发现蛋白质编码基因")
         return longest_transcripts
             
     except Exception as e:
