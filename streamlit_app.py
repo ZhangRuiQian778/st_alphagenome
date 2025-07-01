@@ -7,7 +7,7 @@ AlphaGenome Streamlit 应用程序
 2. 基因组区间预测  
 3. 变异效应分析
 4. 变异评分
-5. 原位诱变分析 (ISM)
+5. 计算机模拟诱变分析 (ISM)
 6. 可视化功能
 """
 
@@ -93,51 +93,51 @@ st.markdown("""
 
 # 组织类型映射：用户友好名称 -> UBERON ID
 ONTOLOGY_TERM_MAP: Dict[str, str] = {
-    "肺 (Lung)": "UBERON:0002048",          # Lung
-    "大脑 (Brain)": "UBERON:0000955",        # Brain
-    "右肝叶 (Right liver lobe)": "UBERON:0001114",  # Right liver lobe
-    "结肠 - 横结肠 (Colon - Transverse)": "UBERON:0001157",  # Colon - Transverse
-    "小脑 (Cerebellum)": "UBERON:0002037",  # Cerebellum
-    "脑干 (Brainstem)": "UBERON:0002298",  # Brainstem
-    "脊髓 (Spinal cord)": "UBERON:0002240",  # Spinal cord
-    "眼 (Eye)": "UBERON:0000970",  # Eye
-    "内耳 (Inner ear)": "UBERON:0006860",  # Inner ear
-    "心脏 (Heart)": "UBERON:0000948",  # Heart
-    "气管 (Trachea)": "UBERON:0003126",  # Trachea
-    "喉 (Larynx)": "UBERON:0001737",  # Larynx
-    "咽 (Pharynx)": "UBERON:0000340",  # Pharynx
-    "胃 (Stomach)": "UBERON:0000945",  # Stomach
-    "小肠 (Small intestine)": "UBERON:0002108",  # Small intestine
-    "十二指肠 (Duodenum)": "UBERON:0002114",  # Duodenum
-    "空肠 (Jejunum)": "UBERON:0002115",  # Jejunum
-    "回肠 (Ileum)": "UBERON:0002116",  # Ileum
-    "大肠 (Large intestine)": "UBERON:0000160",  # Large intestine
-    "结肠 (Colon)": "UBERON:0001155",  # Colon
-    "直肠 (Rectum)": "UBERON:0001052",  # Rectum
-    "肝 (Liver)": "UBERON:0002107",  # Liver
-    "胆囊 (Gallbladder)": "UBERON:0002110",  # Gallbladder
-    "胰腺 (Pancreas)": "UBERON:0001264",  # Pancreas
-    "脾 (Spleen)": "UBERON:0002106",  # Spleen
-    "肾 (Kidney)": "UBERON:0002113",  # Kidney
-    "输尿管 (Ureter)": "UBERON:0000056",  # Ureter
-    "膀胱 (Urinary bladder)": "UBERON:0001255",  # Urinary bladder
-    "尿道 (Urethra)": "UBERON:0000057",  # Urethra
-    "甲状腺 (Thyroid gland)": "UBERON:0001132",  # Thyroid gland
-    "副甲状腺 (Parathyroid gland)": "UBERON:0002260",  # Parathyroid gland
-    "肾上腺 (Adrenal gland)": "UBERON:0002369",  # Adrenal gland
-    "垂体 (Pituitary gland)": "UBERON:0000007",  # Pituitary gland
-    "胸腺 (Thymus)": "UBERON:0001178",  # Thymus
-    "松果体 (Pineal gland)": "UBERON:0000986",  # Pineal gland
-    "卵巢 (Ovary)": "UBERON:0000992",  # Ovary
-    "子宫 (Uterus)": "UBERON:0000995",  # Uterus
-    "阴道 (Vagina)": "UBERON:0000996",  # Vagina
-    "睾丸 (Testis)": "UBERON:0000473",  # Testis
-    "前列腺 (Prostate gland)": "UBERON:0002367",  # Prostate gland
-    "精囊 (Seminal vesicle)": "UBERON:0001049",  # Seminal vesicle
-    "阴茎 (Penis)": "UBERON:0000464",  # Penis
-    "皮肤 (Skin)": "UBERON:0002097",  # Skin
-    "骨（器官级） (Bone organ)": "UBERON:0001474",  # Bone organ
-    "骨骼肌器官 (Skeletal muscle organ)": "UBERON:0001134",  # Skeletal muscle organ
+    "肺 (UBERON:0002048)": "UBERON:0002048",          # Lung
+    "大脑 (UBERON:0000955)": "UBERON:0000955",        # Brain
+    "右肝叶 (UBERON:0001114)": "UBERON:0001114",  # Right liver lobe
+    "结肠 - 横结肠 (UBERON:0001157)": "UBERON:0001157",  # Colon - Transverse
+    "小脑 (UBERON:0002037)": "UBERON:0002037",  # Cerebellum
+    "脑干 (UBERON:0002298)": "UBERON:0002298",  # Brainstem
+    "脊髓 (UBERON:0002240)": "UBERON:0002240",  # Spinal cord
+    "眼 (UBERON:0000970)": "UBERON:0000970",  # Eye
+    "内耳 (UBERON:0006860)": "UBERON:0006860",  # Inner ear
+    "心脏 (UBERON:0000948)": "UBERON:0000948",  # Heart
+    "气管 (UBERON:0003126)": "UBERON:0003126",  # Trachea
+    "喉 (UBERON:0001737)": "UBERON:0001737",  # Larynx
+    "咽 (UBERON:0000340)": "UBERON:0000340",  # Pharynx
+    "胃 (UBERON:0000945)": "UBERON:0000945",  # Stomach
+    "小肠 (UBERON:0002108)": "UBERON:0002108",  # Small intestine
+    "十二指肠 (UBERON:0002114)": "UBERON:0002114",  # Duodenum
+    "空肠 (UBERON:0002115)": "UBERON:0002115",  # Jejunum
+    "回肠 (UBERON:0002116)": "UBERON:0002116",  # Ileum
+    "大肠 (UBERON:0000160)": "UBERON:0000160",  # Large intestine
+    "结肠 (UBERON:0001155)": "UBERON:0001155",  # Colon
+    "直肠 (UBERON:0001052)": "UBERON:0001052",  # Rectum
+    "肝 (UBERON:0002107)": "UBERON:0002107",  # Liver
+    "胆囊 (UBERON:0002110)": "UBERON:0002110",  # Gallbladder
+    "胰腺 (UBERON:0001264)": "UBERON:0001264",  # Pancreas
+    "脾 (UBERON:0002106)": "UBERON:0002106",  # Spleen
+    "肾 (UBERON:0002113)": "UBERON:0002113",  # Kidney
+    "输尿管 (UBERON:0000056)": "UBERON:0000056",  # Ureter
+    "膀胱 (UBERON:0001255)": "UBERON:0001255",  # Urinary bladder
+    "尿道 (UBERON:0000057)": "UBERON:0000057",  # Urethra
+    "甲状腺 (UBERON:0001132)": "UBERON:0001132",  # Thyroid gland
+    "副甲状腺 (UBERON:0002260)": "UBERON:0002260",  # Parathyroid gland
+    "肾上腺 (UBERON:0002369)": "UBERON:0002369",  # Adrenal gland
+    "垂体 (UBERON:0000007)": "UBERON:0000007",  # Pituitary gland
+    "胸腺 (UBERON:0001178)": "UBERON:0001178",  # Thymus
+    "松果体 (UBERON:0000986)": "UBERON:0000986",  # Pineal gland
+    "卵巢 (UBERON:0000992)": "UBERON:0000992",  # Ovary
+    "子宫 (UBERON:0000995)": "UBERON:0000995",  # Uterus
+    "阴道 (UBERON:0000996)": "UBERON:0000996",  # Vagina
+    "睾丸 (UBERON:0000473)": "UBERON:0000473",  # Testis
+    "前列腺 (UBERON:0002367)": "UBERON:0002367",  # Prostate gland
+    "精囊 (UBERON:0001049)": "UBERON:0001049",  # Seminal vesicle
+    "阴茎 (UBERON:0000464)": "UBERON:0000464",  # Penis
+    "皮肤 (UBERON:0002097)": "UBERON:0002097",  # Skin
+    "骨（器官级） (UBERON:0001474)": "UBERON:0001474",  # Bone organ
+    "骨骼肌器官 (UBERON:0001134)": "UBERON:0001134",  # Skeletal muscle organ
 }
 
 def main():
@@ -187,7 +187,7 @@ def main():
         "🗺️ 基因组区间预测", 
         "🔬 变异效应分析", 
         "📊 变异评分", 
-        "🔍 原位诱变分析"
+        "🔍 计算机模拟诱变分析"
     ])
     
     with tab1:
@@ -251,7 +251,7 @@ def dna_sequence_prediction():
         ontology_term_labels = st.multiselect(
             "组织类型",
             options=list(ONTOLOGY_TERM_MAP.keys()),
-            default=["肺 (Lung)"],
+            default=["肺 (UBERON:0002048)"],
             help="选择要分析的组织类型",
             key="dna_seq_ontology_terms"
         )
@@ -344,9 +344,8 @@ def genomic_interval_prediction():
         # 序列长度
         sequence_length = st.selectbox(
             "序列长度",
-            options=[131072, 524288, 1048576],
-            index=2,
-            help="选择预测的序列长度",
+            options=['SEQUENCE_LENGTH_2KB', 'SEQUENCE_LENGTH_16KB', 'SEQUENCE_LENGTH_100KB', 'SEQUENCE_LENGTH_500KB', 'SEQUENCE_LENGTH_1MB'],
+            index=4,
             key="interval_seq_length"
         )
     
@@ -363,7 +362,7 @@ def genomic_interval_prediction():
         ontology_term_labels = st.multiselect(
             "组织类型",
             options=list(ONTOLOGY_TERM_MAP.keys()),
-            default=["肺 (Lung)"],
+            default=["肺 (UBERON:0002048)"],
             key="interval_ontology_terms"
         )
         
@@ -404,8 +403,9 @@ def genomic_interval_prediction():
                     interval = genome.Interval(chromosome, start_pos, end_pos)
                 
                 # 调整序列长度
-                interval = interval.resize(sequence_length)
-                
+                # interval = interval.resize(sequence_length)
+                interval = interval.resize(getattr(dna_client, sequence_length))
+
                 # 转换参数
                 requested_outputs = [getattr(dna_client.OutputType, ot) for ot in output_types]
                 organism_obj = getattr(dna_client.Organism, organism)
@@ -425,16 +425,28 @@ def genomic_interval_prediction():
                 # 显示结果
                 display_prediction_results(output, output_types)
 
-                fig = plot_components.plot(
+                fig1 = plot_components.plot(
                     components=[
                         plot_components.TranscriptAnnotation(longest_transcripts),
                         plot_components.Tracks(output.rna_seq),
                     ],
                     interval=output.rna_seq.interval,
                 )
-                st.pyplot(fig)
-                plt.close(fig)  # 防止内存泄漏
+                st.pyplot(fig1)  
+                plt.close(fig1)  # 防止内存泄漏
 
+
+                fig2 = plot_components.plot(
+                    components=[
+                        plot_components.TranscriptAnnotation(
+                            longest_transcripts, fig_height=0.1
+                        ),
+                        plot_components.Tracks(output.rna_seq),
+                    ],
+                    interval=output.rna_seq.interval.resize(2**15),
+                )
+                st.pyplot(fig2)  
+                plt.close(fig2)  # 防止内存泄漏
                 
         except Exception as e:
             st.error(f"预测过程中出现错误: {str(e)}")
@@ -461,8 +473,8 @@ def variant_effect_analysis():
         # 序列长度
         sequence_length = st.selectbox(
             "序列长度",
-            options=[131072, 524288, 1048576],
-            index=2,
+            options=['SEQUENCE_LENGTH_2KB', 'SEQUENCE_LENGTH_16KB', 'SEQUENCE_LENGTH_100KB', 'SEQUENCE_LENGTH_500KB', 'SEQUENCE_LENGTH_1MB'],
+            index=4,
             key="variant_seq_length"
         )
     
@@ -479,7 +491,7 @@ def variant_effect_analysis():
         ontology_term_labels = st.multiselect(
             "组织类型",
             options=list(ONTOLOGY_TERM_MAP.keys()),
-            default=["肺 (Lung)"],
+            default=["肺 (UBERON:0002048)"],
             key="variant_ontology_terms"
         )
     
@@ -509,7 +521,7 @@ def variant_effect_analysis():
                 )
                 
                 # 创建区间
-                interval = variant.reference_interval.resize(sequence_length)
+                interval = variant.reference_interval.resize(getattr(dna_client, sequence_length))
                 
                 # 转换参数
                 requested_outputs = [getattr(dna_client.OutputType, ot) for ot in output_types]
@@ -580,8 +592,8 @@ def variant_scoring():
         # 区间长度
         sequence_length = st.selectbox(
             "序列长度",
-            options=[131072, 524288, 1048576],
-            index=2,
+            options=['SEQUENCE_LENGTH_2KB', 'SEQUENCE_LENGTH_16KB', 'SEQUENCE_LENGTH_100KB', 'SEQUENCE_LENGTH_500KB', 'SEQUENCE_LENGTH_1MB'],
+            index=4,
             key="score_length"
         )
     
@@ -597,7 +609,7 @@ def variant_scoring():
                     alternate_bases=alternate_bases,
                 )
                 
-                interval = variant.reference_interval.resize(sequence_length)
+                interval = variant.reference_interval.resize(getattr(dna_client, sequence_length))
                 
                 # 选择推荐的评分器
                 variant_scorer = variant_scorers.RECOMMENDED_VARIANT_SCORERS[scorer_type]
@@ -616,8 +628,8 @@ def variant_scoring():
             st.error(f"变异评分过程中出现错误: {str(e)}")
 
 def ism_analysis():
-    """原位诱变分析功能"""
-    st.markdown('<h2 class="sub-header">🔍 原位诱变分析 (ISM)</h2>', unsafe_allow_html=True)
+    """计算机模拟诱变"""
+    st.markdown('<h2 class="sub-header">🔍 计算机模拟诱变 (ISM)</h2>', unsafe_allow_html=True)
     
     st.markdown("""
     <div class="info-box">
@@ -641,10 +653,9 @@ def ism_analysis():
         
         # 序列长度
         sequence_length = st.selectbox(
-            "上下文序列长度",
-            options=[2048, 8192],
+            "序列长度",
+            options=['SEQUENCE_LENGTH_2KB', 'SEQUENCE_LENGTH_16KB', 'SEQUENCE_LENGTH_100KB', 'SEQUENCE_LENGTH_500KB', 'SEQUENCE_LENGTH_1MB'],
             index=0,
-            help="用于预测的上下文序列长度",
             key="ism_seq_length"
         )
         
@@ -664,7 +675,7 @@ def ism_analysis():
         output_type = st.selectbox(
             "输出类型",
             options=['ATAC', 'CAGE', 'DNASE', 'RNA_SEQ', 'CHIP_HISTONE', 'CHIP_TF', 'SPLICE_SITES', 'SPLICE_SITE_USAGE', 'SPLICE_JUNCTIONS', 'CONTACT_MAPS', 'PROCAP'],
-            index=3,  # RNA_SEQ的索引是3
+            index=2,  # DNASE的索引是2
             key="ism_output_type"
         )
         
@@ -697,7 +708,7 @@ def ism_analysis():
             with st.spinner("正在进行ISM分析（这可能需要几分钟）..."):
                 # 创建序列区间
                 sequence_interval = genome.Interval(chromosome, start_pos, end_pos)
-                sequence_interval = sequence_interval.resize(sequence_length)
+                sequence_interval = sequence_interval.resize(getattr(dna_client, sequence_length))
                 
                 # 创建ISM区间
                 ism_interval = sequence_interval.resize(ism_width)
@@ -718,9 +729,33 @@ def ism_analysis():
                 
                 # 显示ISM结果
                 display_ism_results(variant_scores, ism_interval)
-                
+
+                ism_result = ism.ism_matrix(
+                    [extract_k562(x[0]) for x in variant_scores],
+                    variants=[v[0].uns['variant'] for v in variant_scores],
+                )
+
+                fig = plot_components.plot(
+                    [
+                        plot_components.SeqLogo(
+                            scores=ism_result,
+                            scores_interval=ism_interval,
+                            ylabel='ISM K562 DNase',
+                        )
+                    ],
+                    interval=ism_interval,
+                    fig_width=35,
+                )
+                st.pyplot(fig)
+                plt.close(fig)  # 防止内存泄漏
+
         except Exception as e:
             st.error(f"ISM分析过程中出现错误: {str(e)}")
+
+def extract_k562(adata):
+    values = adata.X[:, adata.var['ontology_curie'] == 'EFO:0002067']
+    assert values.size == 1
+    return values.flatten()[0]
 
 def display_prediction_results(output, output_types):
     """显示预测结果"""
@@ -824,7 +859,7 @@ def display_scoring_results(variant_scores, variant, scorer_type):
 
 def display_ism_results(variant_scores, ism_interval):
     """显示ISM分析结果"""
-    st.markdown('<h3 class="sub-header">📊 原位诱变分析结果</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 class="sub-header">📊 计算机模拟诱变</h3>', unsafe_allow_html=True)
     
     st.markdown(f"**分析区间:** {ism_interval}")
     st.markdown(f"**变异总数:** {len(variant_scores)}")
@@ -871,32 +906,6 @@ def display_ism_results(variant_scores, ism_interval):
             max_contributions.append(pos_scores[max_idx])
             max_bases.append(bases[max_idx])
         
-        # 绘制贡献图
-        colors = [base_colors[base] for base in max_bases]
-        bars = ax.bar(positions, max_contributions, color=colors, alpha=0.7)
-        
-        # 在每个条形上标注碱基
-        for i, (bar, base) in enumerate(zip(bars, max_bases)):
-            height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2., height,
-                   base, ha='center', va='bottom' if height >= 0 else 'top',
-                   fontsize=8, fontweight='bold')
-        
-        ax.axhline(y=0, color='black', linestyle='-', alpha=0.3)
-        ax.set_xlabel('位置')
-        ax.set_ylabel('ISM贡献评分')
-        ax.set_title('原位诱变贡献评分')
-        ax.grid(True, alpha=0.3)
-        
-        # 添加图例
-        legend_elements = [plt.Rectangle((0,0),1,1, facecolor=color, alpha=0.7, label=base) 
-                          for base, color in base_colors.items()]
-        ax.legend(handles=legend_elements, title='碱基类型')
-        
-        plt.tight_layout()
-        st.pyplot(fig)
-        plt.close()
-        
         # 显示评分统计
         st.markdown("#### 评分统计信息")
         
@@ -922,8 +931,7 @@ def display_ism_results(variant_scores, ism_interval):
             top_positions_data.append({
                 '位置': idx,
                 '碱基': max_bases[idx],
-                '贡献评分': max_contributions[idx],
-                '绝对贡献': abs_contributions[idx]
+                '评分': max_contributions[idx]
             })
         
         top_df = pd.DataFrame(top_positions_data)
@@ -935,7 +943,7 @@ def display_ism_results(variant_scores, ism_interval):
         ism_df['最大贡献碱基'] = max_bases
         ism_df['最大贡献值'] = max_contributions
         
-        csv_string = ism_df.to_csv(index=False)
+        csv_string = ism_df.to_csv(index=False, encoding='utf_8_sig') 
         st.download_button(
             label="下载ISM分析结果 (CSV)",
             data=csv_string,
