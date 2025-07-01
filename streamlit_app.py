@@ -351,10 +351,10 @@ def genomic_interval_prediction():
     
     with col2:
         # 输出类型
-        output_types = st.selectbox(
+        output_types = st.multiselect(
             "输出类型",
             options=['RNA_SEQ'],
-            index=0,
+            default=['RNA_SEQ'],
             key="interval_output_types"
         )
         
@@ -406,8 +406,9 @@ def genomic_interval_prediction():
                 # interval = interval.resize(sequence_length)
                 interval = interval.resize(getattr(dna_client, sequence_length))
 
-                # 转换参数
+                # 转换参数 
                 requested_outputs = [getattr(dna_client.OutputType, ot) for ot in output_types]
+
                 organism_obj = getattr(dna_client.Organism, organism)
                 ontology_terms = [ONTOLOGY_TERM_MAP[label] for label in ontology_term_labels]
                 
@@ -480,10 +481,10 @@ def variant_effect_analysis():
     
     with col2:
         # 输出类型
-        output_types = st.selectbox(
+        output_types = st.multiselect(
             "输出类型",
             options=['RNA_SEQ'],
-            index=0,
+            default=['RNA_SEQ'],
             key="variant_output_types"
         )
         
